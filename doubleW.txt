@@ -1,0 +1,38 @@
+Bài 1: để hoàn thành lab ta cần viết ra được nội dung của /home/carlos/secret trong tài khoản wiener:peter
+- Đăng nhập với tài khoản wiener:peter.
+- Bài yêu cầu gửi file ảnh để đặt làm avatar, up thử một ảnh bất kỳ và ảnh xuất hiện luôn trên màn hình.
+- Upload file doubleW.php với nội dung <?php echo file_get_contents('/home/carlos/secret'); ?> (file_get_contents là hàm xuất ra nội dung của file dưới dạng text)
+- Vào history HTTP của proxy trong Burp Suite Repeater, tìm request GET nơi mà trang web trả về đường dẫn URL chứa file php mà ta đã đăng.
+- Vào request đó và lấy flag LdQnl3GxQLk2gpVJ13HoYz9ZWZIwwB8F
+
+Bài 2: để hoàn thành lab ta cần viết ra được nội dung của /home/carlos/secret trong tài khoản wiener:peter
+- Đăng nhập với tài khoản wiener:peter.
+- Bài yêu cầu gửi file ảnh để đặt làm avatar, up thử một ảnh bất kỳ và ảnh xuất hiện luôn trên màn hình.
+- Upload file doubleW.php với nội dung <?php echo file_get_contents('/home/carlos/secret'); ?> nhưng bị chặn lại do không phải file ảnh
+- Vào history HTTP của proxy trong Burp Suite Repeater, tìm request GET nơi mà trang web trả về đường dẫn URL chứa file php mà ta đã đăng.
+- chuyển sang Burp Repeater và chuyển nội dung của Content-Type thành image/jpeg và lấy flag
+
+Bài 3: mục đích tương tự với các bài trên
+- Đăng nhập với tài khoản wiener:peter.
+- Bài yêu cầu gửi file ảnh để đặt làm avatar, up thử một ảnh bất kỳ và ảnh xuất hiện luôn trên màn hình.
+- Upload file doubleW.php với nội dung <?php echo file_get_contents('/home/carlos/secret'); ?> hoàn toàn được chấp nhận nhưng web lại trả về nội dung file php dưới dạng text 
+các máy chủ thường chỉ chạy các tập lệnh có kiểu MIME mà chúng đã được định cấu hình rõ ràng để thực thi.
+- Vào HTTP history để lấy POST request phần ta gửi file php lên.
+- Tìm đến phần Content-Disposition và chuyển thành 
+Content-Disposition: form-data; name="avatar"; filename="..%2fexploit.php"
+(để encode URL '/' thành %2f)
+- Reload lại trang ở phần browser
+- Quay trở lại phần GET có chứa Content-Disposition vừa sửa, Send và lấy flag fhiJazmNggXoawRe0NYjbgOQzBMH2FAJ
+
+Bài 4: với bài này ta phải upload 2 file mới lấy được flag
+- Tiếp tục đăng nhập và upload thử file doubleW.php nội dung <?php echo file_get_contents('/home/carlos/secret'); ?> nhưng cũng bị chặn lại, tiếp tục back về trang chủ
+- Vào HTTP History, tìm request POST nơi mà trang web trả về sau khi back lại và chuyển sang Burp Repeater
+- Thay filename thành .htaccess (thay đổi giá trị mặc định của apache), đổi nội dung của Content-Type thành text/plain, nội dung của file php trong Repeater thành AddType application/x-httpd-php .ws rồi send (.ws là phần đuôi mở rộng tùy ý)
+- Thấy web đã thành công tải lên file .htaccess
+- Lúc này web đã cho phép mình upload file có phần mở rộng .ws nên ta đổi phần mở rộng .php của doubleW.php thành doubleW.ws và upload thành công
+- Back lại trang upload, tìm đến phần GET mà trả về file .ws đã upload và lấy flag: cBArH8baMhjtYdkht0NAS63eOeUxr1Qa
+Bài 5:
+- upload một file ảnh Capture.PNG  và thành công
+- Làm lại như bài trên uplaod file doubleW.php nội dung <?php echo file_get_contents('/home/carlos/secret'); ?> nhưng cũng bị chặn lại, tiếp tục back về upload
+- Chuyển request POST /my-account/avatar trả về file php vừa upload sang Burp Repeater chuyển nội dung của filename thành doubleW.php thành doubleW.php%00.jpg và send thành công dưới dưới tên file doubleW.php 
+- Chuyển requesr GET GET /files/avatars/Capture.PNG vừa nãy upload thành công và đổi tên file thành doubleW.php rồi send, ở phần response sẽ xuất hiện flag: KXMEOusj9edRcceABAH0AhhNu9aokgJ0
